@@ -253,32 +253,16 @@ RUN COTURN="4.5.0.8" && wget https://github.com/coturn/coturn/archive/$COTURN.ta
 #     make && \
 #     make install
 
-
 # ./configure CFLAGS="-fsanitize=address -fno-omit-frame-pointer" LDFLAGS="-lasan"
 
-
-RUN cd / && git clone https://github.com/meetecho/janus-gateway.git
-RUN cd /janus-gateway && \
-    sh autogen.sh &&  \
-    git checkout origin/master && git reset --hard 3ff54ec7f4d26817fa000c614762e99bcd6a3da0 && \
-    PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure \
-    --enable-post-processing \
-    --enable-boringssl \
-    --disable-data-channels \
-    --disable-rabbitmq \
-    --disable-mqtt \
-    --disable-plugin-echotest \
-    --disable-unix-sockets \
-    --enable-dtls-settimeout \
-    --disable-plugin-recordplay \
-    --disable-plugin-sip \
-    --disable-plugin-videocall \
-    --disable-plugin-voicemail \
-    --disable-plugin-textroom \
-    --disable-plugin-audiobridge \
-    --disable-plugin-nosip \
-    --disable-all-handlers && \
-    make && make install && make configs
+RUN cd ~ \
+    && git clone https://github.com/meetecho/janus-gateway.git \
+    && cd janus-gateway \
+    && sh autogen.sh \
+    && ./configure --prefix=/opt/janus --disable-rabbitmq --disable-mqtt --enable-docs \
+    && make CFLAGS='-std=c99' \
+    && make install \
+    && make configs
 
 RUN cp -rp ~/janus-gateway/certs /opt/janus/share/janus
 
