@@ -280,10 +280,14 @@ RUN cd /janus-gateway && \
     --disable-all-handlers && \
     make && make install && make configs
 
-# RUN apt-get -y install iperf iperf3
-# RUN git clone https://github.com/HewlettPackard/netperf.git && \
-#     cd netperf && \
-#     bash autogen.sh && \
-#     ./configure && \
-#     make && \
-#     make install 
+RUN cp -rp ~/janus-gateway/certs /opt/janus/share/janus
+
+COPY conf/*.cfg /opt/janus/etc/janus/
+
+RUN apt-get install nginx -y
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80 7088 8088 8188 8089
+EXPOSE 10000-10200/udp
+
+CMD service nginx restart && /opt/janus/bin/janus --nat-1-1=${DOCKER_IP}
