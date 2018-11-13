@@ -259,7 +259,7 @@ RUN cd / && git clone https://github.com/meetecho/janus-gateway.git
 RUN cd /janus-gateway && \
     sh autogen.sh &&  \
     git checkout origin/master && git reset --hard 3ff54ec7f4d26817fa000c614762e99bcd6a3da0 && \
-    PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure \
+    PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" --prefix=/opt/janus ./configure \
     --enable-post-processing \
     --enable-boringssl \
     --disable-data-channels \
